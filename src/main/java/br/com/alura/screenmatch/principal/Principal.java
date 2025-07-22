@@ -38,6 +38,9 @@ public class Principal {
                 3 - Listar Series buscadas
                 4 - Buscar series por titulo
                 5 - Buscar series por ator
+                6 - Top 5 series
+                7 - Buscar series pela categoria
+                8 - Buscar series por total  de temporadas e avaliacao
                 0 - Sair                                 
                 """;
 
@@ -62,17 +65,29 @@ public class Principal {
                 case 4:
                        buscarSeriePorTittulo();
                        break;
-                       case 5:
-                           buscarSeriePorAtor();
-                           break;
+                case 5:
+                       buscarSeriePorAtor();
+                       break;
+                case 6:
+                    buscarTop5Series();
+                    break;
+                case 7:
+                    buscarPorCategoria();
+                    break;
+                case 8:
+                    buscarPorTemporadasAvaliacao();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
                 default:
                     System.out.println("Opção inválida");
+
+                    //Selecionar numero maximo de temporadas e com avaliacao acima de um valor que eu der
             }
             }
         }
+
 
 
 
@@ -153,5 +168,30 @@ public class Principal {
             System.out.println("Series em que " + nomeAtor + " trabalhou: ");
             seriesEncontradas.forEach(s -> System.out.println(s.getTitulo() + "avaliacao " + s.getAvaliacao()));
         }
+
+    private void buscarTop5Series() {
+        List<Serie> seriesTop = repositorio.findTop5ByOrderByAvaliacaoDesc();
+        seriesTop.forEach(s ->
+                System.out.println(s.getTitulo() + " avaliacao " + s.getAvaliacao()));
+    }
+
+    private void buscarPorCategoria() {
+        System.out.println("Digite uma categoria para busca ");
+        var nomeCategoria = leitura.nextLine();
+        Categoria categoria = Categoria.fromPortugues(nomeCategoria);
+        List<Serie> seriesCatergoria= repositorio.findByGenero(categoria);
+        System.out.println("Series da categoria " + nomeCategoria + ": ");
+        seriesCatergoria.forEach(System.out::println);
+
+    }
+
+    private void buscarPorTemporadasAvaliacao() {
+        System.out.println("Digite o numero maximo de temporadas para busca ");
+        var numeroMaximoTemporadas = leitura.nextInt();
+        System.out.println("Avaliacoes a partir de que valor?");
+        var avaliacao = leitura.nextDouble();
+        List<Serie> seriesEncontradas = repositorio.findByTotalTemporadaLessThanEqualAndAvaliacaoGreaterThan(numeroMaximoTemporadas, avaliacao);
+        seriesEncontradas.forEach(s -> System.out.println(s.getTitulo() + " avaliacao " + s.getAvaliacao()));
+    }
     }
 
